@@ -1,42 +1,53 @@
 package service
 
 import (
-	"net"
-	"net/http"
+	"context"
+	"sync"
+
+	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/receiver"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/sender"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/api"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/registrator"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/worker"
 
 	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
-	"gitlab.com/distributed_lab/kit/copus/types"
-	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/distributed_lab/logan/v3/errors"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/types"
 )
 
-type service struct {
-	log      *logan.Entry
-	copus    types.Copus
-	listener net.Listener
-}
-
-func (s *service) run() error {
-	s.log.Info("Service started")
-	r := s.router()
-
-	if err := s.copus.RegisterChi(r); err != nil {
-		return errors.Wrap(err, "cop failed")
-	}
-
-	return http.Serve(s.listener, r)
-}
-
-func newService(cfg config.Config) *service {
-	return &service{
-		log:      cfg.Log(),
-		copus:    cfg.Copus(),
-		listener: cfg.Listener(),
-	}
+var availableServices = map[string]types.Runner{
+	"api":      api.Run,
+	"sender":   sender.Run,
+	"receiver": receiver.Run,
+	"worker":   worker.Run,
 }
 
 func Run(cfg config.Config) {
-	if err := newService(cfg).run(); err != nil {
+	// module registration before starting all services
+	regCfg := cfg.Registrator()
+	if err := registrator.RegisterModule(data.ModuleName, regCfg); err != nil {
 		panic(err)
 	}
+
+	logger := cfg.Log().WithField("service", "main")
+	ctx := context.Background()
+	wg := new(sync.WaitGroup)
+
+	logger.Info("Starting all available services...")
+
+	for serviceName, service := range availableServices {
+		wg.Add(1)
+
+		go func(name string, runner types.Runner) {
+			defer wg.Done()
+
+			runner(ctx, cfg)
+
+		}(serviceName, service)
+
+		logger.WithField("service", serviceName).Info("Service started")
+	}
+
+	wg.Wait()
+
 }

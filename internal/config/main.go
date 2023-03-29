@@ -13,6 +13,13 @@ type Config interface {
 	pgdb.Databaser
 	types.Copuser
 	comfig.Listenerer
+
+	// other config values
+	Amqp() *AmqpData
+	JwtParams() *JwtCfg
+
+	// Registrator config
+	Registrator() RegistratorConfig
 }
 
 type config struct {
@@ -21,6 +28,13 @@ type config struct {
 	types.Copuser
 	comfig.Listenerer
 	getter kv.Getter
+
+	// connectors
+
+	// other config values
+	amqp        comfig.Once
+	registrator comfig.Once
+	jwtCfg      comfig.Once
 }
 
 func New(getter kv.Getter) Config {

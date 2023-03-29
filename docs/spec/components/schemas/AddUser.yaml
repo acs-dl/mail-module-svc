@@ -1,0 +1,33 @@
+type: object
+required:
+  - action
+  - link
+  - first_name
+  - last_name
+  - user_id
+  - email
+properties:
+  action:
+    type: string
+    description: action that must be handled in module, must be "add_user"
+    example: "add_user"
+  link:
+    type: string
+    description: link where module has to add user
+    example: "centrilisedgym.online"
+  first_name:
+    type: string
+    description: first name of the user
+    example: "Valeriia"
+  last_name:
+    type: string
+    description: last name of the user
+    example: "Dubina"
+  email:
+    type: string
+    description: user email to add domain
+    example: "user@mail.com"
+  user_id:
+    type: string
+    description: user's id from identity
+    example: "123"

@@ -35,7 +35,7 @@ variables:
 
 stages:
   - build-and-publish
-  - code-review
+  # - code-review
   - docs
   #- deploy
   #- update
@@ -67,30 +67,30 @@ Build and Publish Tag:
   except: [schedules]
   interruptible: true
 
-Code-Review:
-  image: golang:1.16
-  stage: code-review
-  only:
-    - merge_requests
-  except: [schedules]
-  interruptible: true
-  variables:
-    GIT_STRATEGY: clone
-    GIT_CHECKOUT: "true"
-    GIT_DEPTH: "0"
-  before_script:
-    - |
-      raw='runner:
-      \n\tgolangci-lint:
-      \n\t\tcmd: golangci-lint run
-      \n\t\terrorformat:
-      \n\t\t\t- "%f:%l:%c: %m"'
-    - echo -e $raw > reviewdog.yml
-    - curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b ./bin
-    - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.43.0
-  script:
-    - if [ -f reviewdog.yml ]; then ./bin/reviewdog -reporter=gitlab-mr-discussion -tee; fi
-  needs: []
+# Code-Review:
+#   image: golang:1.16
+#   stage: code-review
+#   only:
+#     - merge_requests
+#   except: [schedules]
+#   interruptible: true
+#   variables:
+#     GIT_STRATEGY: clone
+#     GIT_CHECKOUT: "true"
+#     GIT_DEPTH: "0"
+#   before_script:
+#     - |
+#       raw='runner:
+#       \n\tgolangci-lint:
+#       \n\t\tcmd: golangci-lint run
+#       \n\t\terrorformat:
+#       \n\t\t\t- "%f:%l:%c: %m"'
+#     - echo -e $raw > reviewdog.yml
+#     - curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b ./bin
+#     - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.43.0
+#   script:
+#     - if [ -f reviewdog.yml ]; then ./bin/reviewdog -reporter=gitlab-mr-discussion -tee; fi
+#   needs: []
 
 pages:
   image: node:8

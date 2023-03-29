@@ -3,10 +3,28 @@ log:
   disable_sentry: true
 
 db:
-  url: db_url
+  url: "postgres://mail:mail@localhost:5493/mail?sslmode=disable"
+
+amqp:
+  topic: "mail"
+  publisher: "amqp://guest:guest@localhost:5672/" #module_publisher
+  subscriber: "amqp://guest:guest@localhost:5672/" #module_receiver
 
 listener:
-  addr: :8000
+  addr: :9010
+
+jwt:
+  secret: SuPeR SeCrEt PhRaSe
+  refresh_life: 6h
+  access_life: 10m5s
+
+registrator:
+  outer_url: "http://localhost:8000/integrations/orchestrator/modules" #endpoint to register MODULE
+  inner_url: "http://localhost:9010/integrations/mail" #endpoint to MODULE itself
+  topic: "mail" #MODULE topic
+  title: "Mail" #MODULE title
+  prefix: ""
+  is_module: true
 
 cop:
   disabled: true
