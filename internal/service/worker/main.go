@@ -8,7 +8,7 @@ import (
 	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data/postgres"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/processor"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/processor"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
