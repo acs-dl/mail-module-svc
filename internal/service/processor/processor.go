@@ -8,8 +8,8 @@ import (
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data/manager"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data/postgres"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/googleApi"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/sender"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/googleApi"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/sender"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )

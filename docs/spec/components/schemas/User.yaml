@@ -17,7 +17,7 @@ allOf:
             type: time.Time
             description: timestamp without timezone when user was created
             example: "2023-01-26 08:45:54"
-          email:
+          username:
             type: string
             description: email from mail
             example: "...@domain.com"
@@ -25,3 +25,7 @@ allOf:
             type: string
             description: module name
             example: "mail"
+          submodule:
+            type: string
+            description: submodule name
+            example: "@domain.com"
