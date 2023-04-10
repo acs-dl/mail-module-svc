@@ -4,31 +4,25 @@ import (
 	"context"
 	"sync"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/receiver"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/sender"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/service/api"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/receiver"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/service/registrator"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/worker"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/sender"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/worker"
 
 	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/service/types"
 )
 
 var availableServices = map[string]types.Runner{
-	"api":      api.Run,
-	"sender":   sender.Run,
-	"receiver": receiver.Run,
-	"worker":   worker.Run,
+	"api":       api.Run,
+	"sender":    sender.Run,
+	"receiver":  receiver.Run,
+	"worker":    worker.Run,
+	"registrar": registrator.Run,
 }
 
 func Run(cfg config.Config) {
-	// module registration before starting all services
-	regCfg := cfg.Registrator()
-	if err := registrator.RegisterModule(data.ModuleName, regCfg); err != nil {
-		panic(err)
-	}
-
 	logger := cfg.Log().WithField("service", "main")
 	ctx := context.Background()
 	wg := new(sync.WaitGroup)

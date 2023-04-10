@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/googleApi"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/service/googleApi"
 	"gitlab.com/distributed_lab/logan/v3"
 
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data"

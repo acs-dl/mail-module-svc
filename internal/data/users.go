@@ -33,6 +33,7 @@ type User struct {
 	MailId    string    `json:"mail_id" db:"mail_id" structs:"mail_id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at" structs:"-"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at" structs:"-"`
+	Submodule *string   `json:"-" db:"-" structs:"-"`
 }
 
 type UnverifiedUser struct {
