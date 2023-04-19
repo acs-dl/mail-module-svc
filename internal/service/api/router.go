@@ -51,6 +51,16 @@ func (r *apiRouter) apiRouter() chi.Router {
 		r.Get("/roles", handlers.GetRolesMap)          // comes from orchestrator
 		r.Get("/user_roles", handlers.GetUserRolesMap) // comes from orchestrator
 
+		r.Route("/refresh", func(r chi.Router) {
+			r.Post("/submodule", handlers.RefreshSubmodule)
+			r.Post("/module", handlers.RefreshModule)
+		})
+
+		r.Route("/estimate_refresh", func(r chi.Router) {
+			r.Post("/submodule", handlers.GetEstimatedRefreshSubmodule)
+			r.Post("/module", handlers.GetEstimatedRefreshModule)
+		})
+
 		r.With(auth.Jwt(secret, data.ModuleName, []string{"write", "read"}...)).
 			Get("/permissions", handlers.GetPermissions)
 
