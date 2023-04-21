@@ -68,3 +68,10 @@ func (r *LinksQ) Delete(link string) error {
 
 	return nil
 }
+
+func (r *LinksQ) FilterByLinks(links ...string) data.Links {
+	equalLinks := sq.Eq{"link": links}
+	r.selectBuilder = r.selectBuilder.Where(equalLinks)
+
+	return r
+}
