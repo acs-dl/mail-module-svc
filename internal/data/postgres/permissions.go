@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -13,49 +14,52 @@ import (
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
-const permissionsTableName = "permissions"
+const (
+	permissionsTableName       = "permissions"
+	permissionsRequestIdColumn = permissionsTableName + ".request_id"
+	permissionsMailIdColumn    = permissionsTableName + ".mail_id"
+	permissionsLinkColumn      = permissionsTableName + ".link"
+	permissionsCreatedAtColumn = permissionsTableName + ".created_at"
+	permissionsUpdatedAtColumn = permissionsTableName + ".updated_at"
+)
 
 type PermissionsQ struct {
-	db  *pgdb.DB
-	sql sq.SelectBuilder
+	db            *pgdb.DB
+	selectBuilder sq.SelectBuilder
+	deleteBuilder sq.DeleteBuilder
+	updateBuilder sq.UpdateBuilder
 }
 
 var permissionsColumns = []string{
-	permissionsTableName + ".request_id",
-	permissionsTableName + ".mail_id",
-	permissionsTableName + ".link",
-	permissionsTableName + ".created_at",
-	permissionsTableName + ".updated_at",
+	permissionsRequestIdColumn,
+	permissionsMailIdColumn,
+	permissionsLinkColumn,
+	permissionsCreatedAtColumn,
+	permissionsUpdatedAtColumn,
 }
 
 func NewPermissionsQ(db *pgdb.DB) data.Permissions {
 	return &PermissionsQ{
-		db:  db.Clone(),
-		sql: sq.Select(permissionsColumns...).From(permissionsTableName),
+		db:            db.Clone(),
+		selectBuilder: sq.Select(permissionsColumns...).From(permissionsTableName),
+		deleteBuilder: sq.Delete(permissionsTableName),
+		updateBuilder: sq.Update(permissionsTableName),
 	}
 }
 
-func (q *PermissionsQ) New() data.Permissions {
+func (q PermissionsQ) New() data.Permissions {
 	return NewPermissionsQ(q.db)
 }
 
-func (q *PermissionsQ) Create(permission data.Permission) error {
-	clauses := structs.Map(permission)
-
-	query := sq.Insert(permissionsTableName).SetMap(clauses)
-
-	return q.db.Exec(query)
-}
-
-func (q *PermissionsQ) Select() ([]data.Permission, error) {
+func (q PermissionsQ) Select() ([]data.Permission, error) {
 	var result []data.Permission
 
-	err := q.db.Select(&result, q.sql)
+	err := q.db.Select(&result, q.selectBuilder)
 
 	return result, err
 }
 
-func (q *PermissionsQ) Upsert(permission data.Permission) error {
+func (q PermissionsQ) Upsert(permission data.Permission) error {
 	updateStmt, args := sq.Update(" ").
 		Set("updated_at", time.Now()).MustSql()
 
@@ -65,10 +69,10 @@ func (q *PermissionsQ) Upsert(permission data.Permission) error {
 	return q.db.Exec(query)
 }
 
-func (q *PermissionsQ) Get() (*data.Permission, error) {
+func (q PermissionsQ) Get() (*data.Permission, error) {
 	var result data.Permission
 
-	err := q.db.Get(&result, q.sql)
+	err := q.db.Get(&result, q.selectBuilder)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -76,92 +80,118 @@ func (q *PermissionsQ) Get() (*data.Permission, error) {
 	return &result, err
 }
 
-func (q *PermissionsQ) Delete(mailId string, link string) error {
+func (q PermissionsQ) Delete() error {
 	var deleted []data.Permission
 
-	query := sq.Delete(permissionsTableName).
-		Where(sq.Eq{
-			"mail_id": mailId,
-			"link":    link,
-		}).
-		Suffix("RETURNING *")
-
-	err := q.db.Select(&deleted, query)
+	err := q.db.Select(&deleted, q.deleteBuilder.Suffix("RETURNING *"))
 	if err != nil {
 		return err
 	}
+
 	if len(deleted) == 0 {
-		return errors.Errorf("no rows with `%s` mail id", mailId)
+		return errors.Errorf("no such data to delete")
 	}
 
 	return nil
 }
 
-func (q *PermissionsQ) FilterByMailIds(mailIds ...string) data.Permissions {
-	stmt := sq.Eq{permissionsTableName + ".mail_id": mailIds}
-
-	q.sql = q.sql.Where(stmt)
-
-	return q
-}
-
-func (q *PermissionsQ) FilterByGreaterTime(time time.Time) data.Permissions {
-	q.sql = q.sql.Where(sq.Gt{permissionsTableName + ".updated_at": time})
+func (q PermissionsQ) FilterByMailIds(mailIds ...string) data.Permissions {
+	equalTelegramIds := sq.Eq{permissionsMailIdColumn: mailIds}
+	q.selectBuilder = q.selectBuilder.Where(equalTelegramIds)
+	q.deleteBuilder = q.deleteBuilder.Where(equalTelegramIds)
+	q.updateBuilder = q.updateBuilder.Where(equalTelegramIds)
 
 	return q
 }
 
-func (q *PermissionsQ) FilterByLowerTime(time time.Time) data.Permissions {
-	q.sql = q.sql.Where(sq.Lt{permissionsTableName + ".updated_at": time})
+func (q PermissionsQ) FilterByLinks(links ...string) data.Permissions {
+	equalLinks := sq.Eq{permissionsLinkColumn: links}
+	q.selectBuilder = q.selectBuilder.Where(equalLinks)
+	q.deleteBuilder = q.deleteBuilder.Where(equalLinks)
+	q.updateBuilder = q.updateBuilder.Where(equalLinks)
 
 	return q
 }
 
-func (q *PermissionsQ) Count() data.Permissions {
-	q.sql = sq.Select("COUNT (*)").From(permissionsTableName)
+func (q PermissionsQ) SearchBy(search string) data.Permissions {
+	search = strings.Replace(search, " ", "%", -1)
+	search = fmt.Sprint("%", search, "%")
+	ilikeSearch := sq.ILike{permissionsLinkColumn: search}
+
+	q.selectBuilder = q.selectBuilder.Where(ilikeSearch)
+	q.deleteBuilder = q.deleteBuilder.Where(ilikeSearch)
+	q.updateBuilder = q.updateBuilder.Where(ilikeSearch)
 
 	return q
 }
 
-func (q *PermissionsQ) GetTotalCount() (int64, error) {
+func (q PermissionsQ) Count() data.Permissions {
+	q.selectBuilder = sq.Select("COUNT (*)").From(permissionsTableName)
+
+	return q
+}
+
+func (q PermissionsQ) GetTotalCount() (int64, error) {
 	var count int64
-	err := q.db.Get(&count, q.sql)
+	err := q.db.Get(&count, q.selectBuilder)
 
 	return count, err
 }
 
-func (q *PermissionsQ) Page(pageParams pgdb.OffsetPageParams) data.Permissions {
-	q.sql = pageParams.ApplyTo(q.sql, "link")
+func (q PermissionsQ) Page(pageParams pgdb.OffsetPageParams) data.Permissions {
+	q.selectBuilder = pageParams.ApplyTo(q.selectBuilder, "link")
 
 	return q
 }
 
-func (q *PermissionsQ) WithUsers() data.Permissions {
-	q.sql = sq.Select().Columns(helpers.RemoveDuplicateColumn(append(permissionsColumns, usersColumns...))...).
+func (q PermissionsQ) WithUsers() data.Permissions {
+	q.selectBuilder = sq.Select().Columns(helpers.RemoveDuplicateColumn(append(permissionsColumns, usersColumns...))...).
 		From(permissionsTableName).
-		LeftJoin(fmt.Sprint(usersTableName, " ON ", usersTableName, ".mail_id = ", permissionsTableName, ".mail_id")).
-		Where(sq.NotEq{permissionsTableName + ".request_id": nil}).
+		LeftJoin(usersTableName + " ON " + usersMailIdColumn + " = " + permissionsMailIdColumn).
+		Where(sq.NotEq{permissionsRequestIdColumn: nil}).
 		GroupBy(helpers.RemoveDuplicateColumn(append(permissionsColumns, usersColumns...))...)
 
 	return q
 }
 
-func (q *PermissionsQ) CountWithUsers() data.Permissions {
-	q.sql = sq.Select("COUNT(*)").From(permissionsTableName).
-		LeftJoin(fmt.Sprint(usersTableName, " ON ", usersTableName, ".mail_id = ", permissionsTableName, ".mail_id")).
-		Where(sq.NotEq{permissionsTableName + ".request_id": nil})
+func (q PermissionsQ) CountWithUsers() data.Permissions {
+	q.selectBuilder = sq.Select("COUNT(*)").From(permissionsTableName).
+		LeftJoin(usersTableName + " ON " + usersMailIdColumn + " = " + permissionsMailIdColumn).
+		Where(sq.NotEq{permissionsRequestIdColumn: nil})
 
 	return q
 }
 
-func (q *PermissionsQ) FilterByUserIds(userIds ...int64) data.Permissions {
-	stmt := sq.Eq{usersTableName + ".id": userIds}
+func (q PermissionsQ) FilterByUserIds(userIds ...int64) data.Permissions {
+	equalUserIds := sq.Eq{usersIdColumn: userIds}
 
 	if len(userIds) == 0 {
-		stmt = sq.Eq{usersTableName + ".id": nil}
+		equalUserIds = sq.Eq{usersIdColumn: nil}
 	}
 
-	q.sql = q.sql.Where(stmt)
+	q.selectBuilder = q.selectBuilder.Where(equalUserIds)
+	q.deleteBuilder = q.deleteBuilder.Where(equalUserIds)
+	q.updateBuilder = q.updateBuilder.Where(equalUserIds)
+
+	return q
+}
+
+func (q PermissionsQ) FilterByGreaterTime(time time.Time) data.Permissions {
+	greaterTime := sq.Gt{permissionsUpdatedAtColumn: time}
+
+	q.selectBuilder = q.selectBuilder.Where(greaterTime)
+	q.deleteBuilder = q.deleteBuilder.Where(greaterTime)
+	q.updateBuilder = q.updateBuilder.Where(greaterTime)
+
+	return q
+}
+
+func (q PermissionsQ) FilterByLowerTime(time time.Time) data.Permissions {
+	lowerTime := sq.Lt{permissionsUpdatedAtColumn: time}
+
+	q.selectBuilder = q.selectBuilder.Where(lowerTime)
+	q.deleteBuilder = q.deleteBuilder.Where(lowerTime)
+	q.updateBuilder = q.updateBuilder.Where(lowerTime)
 
 	return q
 }

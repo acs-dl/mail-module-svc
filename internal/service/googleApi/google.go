@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -27,8 +28,8 @@ type googleApi struct {
 	log    *logan.Entry
 }
 
-func NewGoogle(log *logan.Entry) GoogleClient {
-	ctx := context.Background()
+func NewGoogleAsInterface(cfg config.Config, ctx context.Context) interface{} {
+	log := cfg.Log()
 
 	currentDir, err := os.Getwd()
 	if err != nil {
@@ -46,22 +47,30 @@ func NewGoogle(log *logan.Entry) GoogleClient {
 
 	scopes := []string{admin.AdminDirectoryUserScope}
 
-	config, err := google.JWTConfigFromJSON(privateCredBytes, scopes...)
+	myConfig, err := google.JWTConfigFromJSON(privateCredBytes, scopes...)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	config.Subject = "mykhailo.velykodnyi@centrilisedgym.online"
+	myConfig.Subject = "mykhailo.velykodnyi@centrilisedgym.online"
 
 	// Use the client to authenticate API requests
-	client := config.Client(ctx)
+	client := myConfig.Client(ctx)
 
 	service, err := admin.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Failed to create service: %v", err)
 	}
 
-	return &googleApi{
+	return interface{}(&googleApi{
 		client: service,
 		log:    log,
-	}
+	})
+}
+
+func GoogleClientInstance(ctx context.Context) GoogleClient {
+	return ctx.Value("google").(GoogleClient)
+}
+
+func CtxGoogleClientInstance(entry interface{}, ctx context.Context) context.Context {
+	return context.WithValue(ctx, "google", entry)
 }

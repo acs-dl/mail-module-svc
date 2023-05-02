@@ -24,11 +24,12 @@ type ModulePayload struct {
 	Action    string `json:"action"`
 
 	//other fields that are required for module
-	Link      string `json:"link"`
-	Email     string `json:"username"`
-	Phone     string `json:"phone"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	Link      string   `json:"link"`
+	Links     []string `json:"links"`
+	Email     string   `json:"username"`
+	Phone     string   `json:"phone"`
+	FirstName string   `json:"first_name"`
+	LastName  string   `json:"last_name"`
 }
 
 type UnverifiedPayload struct {

@@ -14,7 +14,7 @@ func (p *processor) validateDeleteUser(msg data.ModulePayload) error {
 	}.Filter()
 }
 
-func (p *processor) handleDeleteUserAction(msg data.ModulePayload) error {
+func (p *processor) HandleDeleteUserAction(msg data.ModulePayload) error {
 	p.log.Infof("start handle message action with id `%s`", msg.RequestId)
 
 	err := p.validateDeleteUser(msg)
@@ -64,13 +64,13 @@ func (p *processor) handleDeleteUserAction(msg data.ModulePayload) error {
 				return errors.Wrap(err, "some error while removing user from api")
 			}
 		}
-		if err = p.permissionsQ.Delete(user.MailId, permission.Link); err != nil {
+		if err = p.permissionsQ.FilterByMailIds(user.MailId).FilterByLinks(permission.Link).Delete(); err != nil {
 			p.log.WithError(err).Errorf("failed to delete permission from db for message action with id `%s`", msg.RequestId)
 			return errors.Wrap(err, "failed to delete permission")
 		}
 	}
 
-	err = p.usersQ.Delete(user.MailId)
+	err = p.usersQ.FilterByMailIds(user.MailId).Delete()
 	if err != nil {
 		p.log.WithError(err).Errorf("failed to delete user by mail id `%d` for message action with id `%s`", user.MailId, msg.RequestId)
 		return errors.Wrap(err, "failed to delete user")

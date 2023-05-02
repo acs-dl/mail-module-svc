@@ -20,7 +20,7 @@ func (p *processor) validateAddUser(msg data.ModulePayload) error {
 	}.Filter()
 }
 
-func (p *processor) handleAddUserAction(msg data.ModulePayload) error {
+func (p *processor) HandleAddUserAction(msg data.ModulePayload) error {
 	p.log.Infof("start handle message action with id `%s`", msg.RequestId)
 
 	err := p.validateAddUser(msg)

@@ -1,9 +1,8 @@
 package processor
 
 import (
-	"fmt"
+	"context"
 
-	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data/manager"
@@ -11,25 +10,22 @@ import (
 	"gitlab.com/distributed_lab/acs/mail-module/internal/service/googleApi"
 	"gitlab.com/distributed_lab/acs/mail-module/internal/service/sender"
 	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
 const (
-	serviceName = data.ModuleName + "-processor"
+	ServiceName = data.ModuleName + "-processor"
 
 	//add needed actions for module
-	GetUsersAction   = "get_users"
-	AddUserAction    = "add_user"
-	RemoveUserAction = "remove_user"
-	VerifyUserAction = "verify_user"
-	DeleteUserAction = "delete_user"
-
 	SetUsersAction    = "set_users"
 	DeleteUsersAction = "delete_users"
 )
 
 type Processor interface {
-	HandleNewMessage(msg data.ModulePayload) error
+	HandleGetUsersAction(msg data.ModulePayload) error
+	HandleAddUserAction(msg data.ModulePayload) error
+	HandleRemoveUserAction(msg data.ModulePayload) error
+	HandleDeleteUserAction(msg data.ModulePayload) error
+	HandleVerifyUserAction(msg data.ModulePayload) error
 	SendDeleteUser(uuid string, user data.User) error
 }
 
@@ -42,42 +38,21 @@ type processor struct {
 	sender       *sender.Sender
 }
 
-var handleActions = map[string]func(proc *processor, msg data.ModulePayload) error{
-	GetUsersAction:   (*processor).handleGetUsersAction,
-	AddUserAction:    (*processor).handleAddUserAction,
-	RemoveUserAction: (*processor).handleRemoveUserAction,
-	VerifyUserAction: (*processor).handleVerifyUserAction,
-	DeleteUserAction: (*processor).handleDeleteUserAction,
-}
-
-func NewProcessor(cfg config.Config) Processor {
-	return &processor{
-		log:          cfg.Log().WithField("service", serviceName),
-		googleClient: googleApi.NewGoogle(cfg.Log()),
+func NewProcessorAsInterface(cfg config.Config, ctx context.Context) interface{} {
+	return interface{}(&processor{
+		log:          cfg.Log().WithField("service", ServiceName),
+		googleClient: googleApi.GoogleClientInstance(ctx),
 		permissionsQ: postgres.NewPermissionsQ(cfg.DB()),
 		usersQ:       postgres.NewUsersQ(cfg.DB()),
 		managerQ:     manager.NewManager(cfg.DB()),
-		sender:       sender.NewSender(cfg),
-	}
+		sender:       sender.SenderInstance(ctx),
+	})
 }
 
-func (p *processor) HandleNewMessage(msg data.ModulePayload) error {
-	p.log.Infof("handling message with id `%s`", msg.RequestId)
+func ProcessorInstance(ctx context.Context) Processor {
+	return ctx.Value(ServiceName).(Processor)
+}
 
-	err := validation.Errors{
-		"action": validation.Validate(msg.Action, validation.Required, validation.In(GetUsersAction, AddUserAction, RemoveUserAction, DeleteUserAction, VerifyUserAction)),
-	}.Filter()
-	if err != nil {
-		p.log.WithError(err).Errorf("no such action `%s` to handle for message with id `%s`", msg.Action, msg.RequestId)
-		return errors.Wrap(err, fmt.Sprintf("no such action `%s` to handle for message with id `%s`", msg.Action, msg.RequestId))
-	}
-
-	requestHandler := handleActions[msg.Action]
-	if err = requestHandler(p, msg); err != nil {
-		p.log.WithError(err).Errorf("failed to handle message with id `%s`", msg.RequestId)
-		return err
-	}
-
-	p.log.Infof("finish handling message with id `%s`", msg.RequestId)
-	return nil
+func CtxProcessorInstance(entry interface{}, ctx context.Context) context.Context {
+	return context.WithValue(ctx, ServiceName, entry)
 }

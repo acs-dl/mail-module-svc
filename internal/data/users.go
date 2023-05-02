@@ -10,8 +10,7 @@ type Users interface {
 	New() Users
 
 	Upsert(user User) error
-	Delete(mailId string) error
-
+	Delete() error
 	Select() ([]User, error)
 	Get() (*User, error)
 

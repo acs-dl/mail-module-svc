@@ -35,8 +35,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: check how it works
-	users, err = googleApi.NewGoogle(Log(r)).SearchByUsersFromApi(email)
+	users, err = googleApi.GoogleClientInstance(ParentContext(r.Context())).SearchByUsersFromApi(email)
 	if err != nil {
 		Log(r).WithError(err).Infof("failed to get users from api by `%s`", email)
 		ape.RenderErr(w, problems.InternalError())
