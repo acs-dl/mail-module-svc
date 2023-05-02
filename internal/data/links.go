@@ -8,6 +8,8 @@ type Links interface {
 
 	Get() (*Link, error)
 	Select() ([]Link, error)
+
+	FilterByLinks(links ...string) Links
 }
 
 type Link struct {
