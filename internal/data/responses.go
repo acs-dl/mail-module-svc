@@ -7,9 +7,10 @@ type Responses interface {
 
 	Get() (*Response, error)
 	Select() ([]Response, error)
-
 	Insert(response Response) error
-	Delete(id string) error
+	Delete() error
+
+	FilterByIds(ids ...string) Responses
 }
 
 type Response struct {

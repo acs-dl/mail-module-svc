@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/googleApi"
+	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
 	"gitlab.com/distributed_lab/logan/v3"
 
 	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
@@ -17,8 +17,8 @@ const (
 	permissionsCtxKey
 	usersCtxKey
 	linksCtxKey
-	paramsCtxKey
-	mailClientCtxKey
+	configCtxKey
+	parentContextCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -61,6 +61,20 @@ func CtxLinksQ(entry data.Links) func(context.Context) context.Context {
 	}
 }
 
-func MailClient(ctx context.Context) googleApi.GoogleClient {
-	return ctx.Value(mailClientCtxKey).(googleApi.GoogleClient)
+func Config(ctx context.Context) config.Config {
+	return ctx.Value(configCtxKey).(config.Config)
+}
+
+func CtxConfig(entry config.Config, ctx context.Context) context.Context {
+	return context.WithValue(ctx, configCtxKey, entry)
+}
+
+func ParentContext(ctx context.Context) context.Context {
+	return ctx.Value(parentContextCtxKey).(context.Context)
+}
+
+func CtxParentContext(entry context.Context) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, parentContextCtxKey, entry)
+	}
 }

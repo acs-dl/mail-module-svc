@@ -14,38 +14,53 @@ import (
 	"gitlab.com/distributed_lab/kit/pgdb"
 )
 
-const usersTableName = "users"
+const (
+	usersTableName       = "users"
+	usersIdColumn        = usersTableName + ".id"
+	usersMailIdColumn    = usersTableName + ".mail_id"
+	usersEmailColumn     = usersTableName + ".email"
+	usersNameColumn      = usersTableName + ".name"
+	usersCreatedAtColumn = usersTableName + ".created_at"
+	usersUpdatedAtColumn = usersTableName + ".updated_at"
+)
 
 type UsersQ struct {
-	db  *pgdb.DB
-	sql sq.SelectBuilder
+	db            *pgdb.DB
+	selectBuilder sq.SelectBuilder
+	deleteBuilder sq.DeleteBuilder
+	updateBuilder sq.UpdateBuilder
 }
 
-var selectedUsersTable = sq.Select("*").From(usersTableName)
-
-var usersColumns = []string{
-	usersTableName + ".id",
-	usersTableName + ".email",
-	usersTableName + ".mail_id",
-	usersTableName + ".name",
-	usersTableName + ".created_at",
-}
+var (
+	usersColumns = []string{
+		usersIdColumn,
+		usersEmailColumn,
+		usersMailIdColumn,
+		usersNameColumn,
+		usersCreatedAtColumn,
+	}
+	selectedUsersTable = sq.Select("*").From(usersTableName)
+)
 
 func NewUsersQ(db *pgdb.DB) data.Users {
 	return &UsersQ{
-		db:  db.Clone(),
-		sql: selectedUsersTable,
+		db:            db.Clone(),
+		selectBuilder: selectedUsersTable,
+		deleteBuilder: sq.Delete(usersTableName),
+		updateBuilder: sq.Update(usersTableName),
 	}
 }
 
-func (q *UsersQ) New() data.Users {
+func (q UsersQ) New() data.Users {
 	return NewUsersQ(q.db)
 }
 
-func (q *UsersQ) Upsert(user data.User) error {
+func (q UsersQ) Upsert(user data.User) error {
 	clauses := structs.Map(user)
 
 	updateQuery := sq.Update(" ").
+		Set("name", user.Name).
+		Set("email", user.Email).
 		Set("updated_at", time.Now())
 
 	if user.Id != nil {
@@ -59,30 +74,25 @@ func (q *UsersQ) Upsert(user data.User) error {
 	return q.db.Exec(query)
 }
 
-func (q *UsersQ) Delete(mailId string) error {
+func (q UsersQ) Delete() error {
 	var deleted []data.User
 
-	query := sq.Delete(usersTableName).
-		Where(sq.Eq{
-			"mail_id": mailId,
-		}).
-		Suffix("RETURNING *")
-
-	err := q.db.Select(&deleted, query)
+	err := q.db.Select(&deleted, q.deleteBuilder.Suffix("RETURNING *"))
 	if err != nil {
 		return err
 	}
+
 	if len(deleted) == 0 {
-		return errors.Errorf("no rows with `%d` mail id", mailId)
+		return errors.Errorf("no such data to delete")
 	}
 
 	return nil
 }
 
-func (q *UsersQ) Get() (*data.User, error) {
+func (q UsersQ) Get() (*data.User, error) {
 	var result data.User
 
-	err := q.db.Get(&result, q.sql)
+	err := q.db.Get(&result, q.selectBuilder)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -90,57 +100,78 @@ func (q *UsersQ) Get() (*data.User, error) {
 	return &result, err
 }
 
-func (q *UsersQ) Select() ([]data.User, error) {
+func (q UsersQ) Select() ([]data.User, error) {
 	var result []data.User
 
-	err := q.db.Select(&result, q.sql)
+	err := q.db.Select(&result, q.selectBuilder)
 
 	return result, err
 }
 
-func (q *UsersQ) FilterById(id *int64) data.Users {
-	stmt := sq.Eq{usersTableName + ".id": id}
+func (q UsersQ) FilterById(id *int64) data.Users {
+	equalId := sq.Eq{usersIdColumn: id}
 
-	q.sql = q.sql.Where(stmt)
-
-	return q
-}
-
-func (q *UsersQ) FilterByMailIds(mailIds ...string) data.Users {
-	q.sql = q.sql.Where(sq.Eq{usersTableName + ".mail_id": mailIds})
+	q.selectBuilder = q.selectBuilder.Where(equalId)
+	q.deleteBuilder = q.deleteBuilder.Where(equalId)
+	q.updateBuilder = q.updateBuilder.Where(equalId)
 
 	return q
 }
 
-func (q *UsersQ) SearchBy(search string) data.Users {
-	search = strings.Replace(search, " ", "%", -1)
-	search = fmt.Sprint("%", search, "%")
+func (q UsersQ) FilterByMailIds(mailIds ...string) data.Users {
+	equalTelegramIds := sq.Eq{usersMailIdColumn: mailIds}
 
-	q.sql = q.sql.Where(sq.ILike{"email": search})
-	return q
-}
-
-func (q *UsersQ) Page(pageParams pgdb.OffsetPageParams) data.Users {
-	q.sql = pageParams.ApplyTo(q.sql, "email")
+	q.selectBuilder = q.selectBuilder.Where(equalTelegramIds)
+	q.deleteBuilder = q.deleteBuilder.Where(equalTelegramIds)
+	q.updateBuilder = q.updateBuilder.Where(equalTelegramIds)
 
 	return q
 }
 
-func (q *UsersQ) Count() data.Users {
-	q.sql = sq.Select("COUNT (*)").From(usersTableName)
+func (q UsersQ) FilterByEmail(email ...string) data.Users {
+	equalEmails := sq.Eq{usersEmailColumn: email}
+
+	q.selectBuilder = q.selectBuilder.Where(equalEmails)
+	q.deleteBuilder = q.deleteBuilder.Where(equalEmails)
+	q.updateBuilder = q.updateBuilder.Where(equalEmails)
 
 	return q
 }
 
-func (q *UsersQ) GetTotalCount() (int64, error) {
+func (q UsersQ) Page(pageParams pgdb.OffsetPageParams) data.Users {
+	q.selectBuilder = pageParams.ApplyTo(q.selectBuilder, "username")
+
+	return q
+}
+
+func (q UsersQ) Count() data.Users {
+	q.selectBuilder = sq.Select("COUNT (*)").From(usersTableName)
+
+	return q
+}
+
+func (q UsersQ) GetTotalCount() (int64, error) {
 	var count int64
-	err := q.db.Get(&count, q.sql)
+	err := q.db.Get(&count, q.selectBuilder)
 
 	return count, err
 }
 
-func (q *UsersQ) FilterByLowerTime(time time.Time) data.Users {
-	q.sql = q.sql.Where(sq.Lt{usersTableName + ".updated_at": time})
+func (q UsersQ) SearchBy(search string) data.Users {
+	search = strings.Replace(search, " ", "%", -1)
+	search = fmt.Sprint("%", search, "%")
+
+	q.selectBuilder = q.selectBuilder.Where(sq.ILike{usersEmailColumn: search})
+
+	return q
+}
+
+func (q UsersQ) FilterByLowerTime(time time.Time) data.Users {
+	lowerTime := sq.Lt{usersUpdatedAtColumn: time}
+
+	q.selectBuilder = q.selectBuilder.Where(lowerTime)
+	q.deleteBuilder = q.deleteBuilder.Where(lowerTime)
+	q.updateBuilder = q.updateBuilder.Where(lowerTime)
 
 	return q
 }

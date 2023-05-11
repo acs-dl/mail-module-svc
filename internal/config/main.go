@@ -17,8 +17,8 @@ type Config interface {
 	// other config values
 	Amqp() *AmqpData
 	JwtParams() *JwtCfg
-
-	// Registrator config
+	Runners() *RunnersCfg
+	RateLimit() *RateLimitCfg
 	Registrator() RegistratorConfig
 }
 
@@ -35,6 +35,8 @@ type config struct {
 	amqp        comfig.Once
 	registrator comfig.Once
 	jwtCfg      comfig.Once
+	rateLimit   comfig.Once
+	runners     comfig.Once
 }
 
 func New(getter kv.Getter) Config {

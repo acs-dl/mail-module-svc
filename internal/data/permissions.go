@@ -9,16 +9,15 @@ import (
 type Permissions interface {
 	New() Permissions
 
-	Create(permission Permission) error
 	Upsert(permission Permission) error
-	Delete(mailId string, link string) error
-
+	Delete() error
 	Select() ([]Permission, error)
 	Get() (*Permission, error)
 
 	FilterByMailIds(mailIds ...string) Permissions
 	FilterByGreaterTime(time time.Time) Permissions
 	FilterByLowerTime(time time.Time) Permissions
+	FilterByLinks(links ...string) Permissions
 
 	WithUsers() Permissions
 	FilterByUserIds(userIds ...int64) Permissions
