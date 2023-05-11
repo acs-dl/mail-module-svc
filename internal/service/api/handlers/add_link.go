@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/api/requests"
+	"github.com/acs-dl/mail-module-svc/internal/data"
+	"github.com/acs-dl/mail-module-svc/internal/service/api/requests"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 )

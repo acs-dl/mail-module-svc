@@ -7,8 +7,8 @@ Mail module for ACS project
 ## Install
 
   ```
-  git clone gitlab.com/distributed_lab/acs/mail-module
-  cd mail-module
+  git clone github.com/acs-dl/mail-module-svc
+  cd mail-module-svc
   go build main.go
   export KV_VIPER_FILE=./config.yaml
   ./main migrate up
@@ -39,8 +39,8 @@ Make sure that docker installed.
 use `docker run ` with `-p 8080:80` to expose port 80 to 8080
 
   ```
-  docker build -t gitlab.com/distributed_lab/acs/mail-module .
-  docker run -e KV_VIPER_FILE=/config.yaml gitlab.com/distributed_lab/acs/mail-module
+  docker build -t github.com/acs-dl/mail-module-svc .
+  docker run -e KV_VIPER_FILE=/config.yaml github.com/acs-dl/mail-module-svc
   ```
 
 ## Running from Source
@@ -55,11 +55,3 @@ use `docker run ` with `-p 8080:80` to expose port 80 to 8080
 For services, we do use ***PostgresSQL*** database. 
 You can [install it locally](https://www.postgresql.org/download/) or use [docker image](https://hub.docker.com/_/postgres/).
 
-
-### Third-party services
-
-
-## Contact
-
-Responsible Maksym Hrynenko
-The primary contact for this project is  t.me/laksherie_mx

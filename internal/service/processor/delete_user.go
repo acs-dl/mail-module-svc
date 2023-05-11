@@ -3,8 +3,8 @@ package processor
 import (
 	"regexp"
 
+	"github.com/acs-dl/mail-module-svc/internal/data"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 

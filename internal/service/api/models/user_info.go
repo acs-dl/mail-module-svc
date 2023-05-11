@@ -3,8 +3,8 @@ package models
 import (
 	"strconv"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/resources"
+	"github.com/acs-dl/mail-module-svc/internal/data"
+	"github.com/acs-dl/mail-module-svc/resources"
 )
 
 func NewUserInfoModel(user data.User, id int) resources.UserInfo {

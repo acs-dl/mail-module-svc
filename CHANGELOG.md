@@ -44,6 +44,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Database.
 - API handlers.
 
-[1.0.0]: https://gitlab.com/distributed_lab/acs/mail-module/-/tree/feature/review_fixes
-[1.0.1]: https://gitlab.com/distributed_lab/acs/gitlab-module/-/compare/feature/review_fixes...feature/many_requests_handle
-[1.0.2]: https://gitlab.com/distributed_lab/acs/gitlab-module/-/compare/feature/review_fixes...feature/many_requests_handle

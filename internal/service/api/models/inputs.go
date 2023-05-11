@@ -1,7 +1,7 @@
 package models
 
 import (
-	"gitlab.com/distributed_lab/acs/mail-module/resources"
+	"github.com/acs-dl/mail-module-svc/resources"
 )
 
 func NewInputsModel() resources.Inputs {

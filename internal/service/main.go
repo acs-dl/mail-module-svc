@@ -4,18 +4,18 @@ import (
 	"context"
 	"sync"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/api"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/api/handlers"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/googleApi"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/pqueue"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/processor"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/receiver"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/registrator"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/sender"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/worker"
+	"github.com/acs-dl/mail-module-svc/internal/service/api"
+	"github.com/acs-dl/mail-module-svc/internal/service/api/handlers"
+	"github.com/acs-dl/mail-module-svc/internal/service/googleApi"
+	"github.com/acs-dl/mail-module-svc/internal/service/pqueue"
+	"github.com/acs-dl/mail-module-svc/internal/service/processor"
+	"github.com/acs-dl/mail-module-svc/internal/service/receiver"
+	"github.com/acs-dl/mail-module-svc/internal/service/registrator"
+	"github.com/acs-dl/mail-module-svc/internal/service/sender"
+	"github.com/acs-dl/mail-module-svc/internal/service/worker"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
+	"github.com/acs-dl/mail-module-svc/internal/config"
 )
 
 type svc struct {

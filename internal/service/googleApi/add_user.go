@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
+	"github.com/acs-dl/mail-module-svc/internal/data"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	admin "google.golang.org/api/admin/directory/v1"
 	"google.golang.org/api/googleapi"

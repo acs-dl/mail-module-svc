@@ -60,6 +60,8 @@ github.com/ThreeDotsLabs/watermill v1.2.0/go.mod h1:IuVxGk/kgCN0cex2S94BLglUiB0P
 github.com/ThreeDotsLabs/watermill-amqp/v2 v2.0.7 h1:AUSXLqdsA1LXWuoQSkIRG9FhMo6EYM9GSgd+bnf1W0w=
 github.com/ThreeDotsLabs/watermill-amqp/v2 v2.0.7/go.mod h1:DKOBUoMVtPMV8jBEbRP3NL6TgnOMyRvVza3W297cdqU=
 github.com/a8m/expect v1.0.0/go.mod h1:4IwSCMumY49ScypDnjNbYEjgVeqy1/U2cEs3Lat96eA=
+github.com/acs-dl/auth-svc v0.0.0-20230511083241-b6fde9efdf0d h1:BD+a/C7vHbEyg8z6ogdGVuGH92DgrzqzxTub4WWlsN8=
+github.com/acs-dl/auth-svc v0.0.0-20230511083241-b6fde9efdf0d/go.mod h1:M+hmJzfQECAkm+PmVpoakzc2pi1X0QM29qmQTMFUpwM=
 github.com/ajg/form v1.5.1/go.mod h1:uL1WgH+h2mgNtvBq0339dVnzXdBETtL2LeUXaIv25UY=
 github.com/alecthomas/kingpin v2.2.6+incompatible h1:5svnBTFgJjZvGKyYBtMB0+m5wvrbUHiqye8wRJMlnYI=
 github.com/alecthomas/kingpin v2.2.6+incompatible/go.mod h1:59OFYbFVLKQKq+mqrL6Rw5bR0c3ACQaawgXx0QYndlE=
@@ -546,12 +548,6 @@ github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9dec
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.0/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-gitlab.com/distributed_lab/acs/auth v0.0.0-20230223163501-30b2c097cb7c h1:jVkkTnLcCOWCxWEo+JfYFOKnvokQpcwjpNcEylvlcjo=
-gitlab.com/distributed_lab/acs/auth v0.0.0-20230223163501-30b2c097cb7c/go.mod h1:MTJBcrAZbUve2Iz/o46D9xRhPZvEeArlf1Ug1lG6LyU=
-gitlab.com/distributed_lab/acs/auth v0.0.0-20230309115252-2c1f9e1d211a h1:ZD9Htsle72NgSMdHb292tGUWXQcDToErcPAsaoC7ir8=
-gitlab.com/distributed_lab/acs/auth v0.0.0-20230309115252-2c1f9e1d211a/go.mod h1:0kZvT9LUCzy0cORWP21ue/u4CAuRcJWzO3ANJBCYc3A=
-gitlab.com/distributed_lab/acs/auth v0.0.0-20230328135644-b4f544227e27 h1:sRvcQtHJ+/mUo10G/cDmVm+yVRv3MAxGSH4WL34XTgo=
-gitlab.com/distributed_lab/acs/auth v0.0.0-20230328135644-b4f544227e27/go.mod h1:7KA4zDZelWxUVX7l/PMRvCw8CCzhVH+EDEYYu79LU0M=
 gitlab.com/distributed_lab/ape v1.7.1 h1:LpTmZgG7Lvx6ulopQbH2aWI3s8ey9FsKVjbic3ZQIy4=
 gitlab.com/distributed_lab/ape v1.7.1/go.mod h1:Qy9Y2arL0hmZIpVpctGEFhdrVsjWtyVJ5G+bZWcFT4s=
 gitlab.com/distributed_lab/figure v2.1.0+incompatible/go.mod h1:tk+aPBohT49MGPLy5+eVbE1HpD/CaC5drBHfVpRI8eE=
@@ -601,7 +597,6 @@ golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPh
 golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/crypto v0.3.0/go.mod h1:hebNnKkNXi2UzZN1eVRvBB7co0a+JxK6XbPiWVs/3J4=
-golang.org/x/crypto v0.5.0 h1:U/0M97KRkSFvyD/3FSmdP5W5swImpNgle/EHFhOsQPE=
 golang.org/x/crypto v0.5.0/go.mod h1:NK/OQwhpMQP3MwtdjgLlYHnH9ebylxKWv3e0fK+mkQU=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=

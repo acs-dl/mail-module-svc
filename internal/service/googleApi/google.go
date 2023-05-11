@@ -2,12 +2,12 @@ package googleApi
 
 import (
 	"context"
+	"gitlab.com/distributed_lab/logan/v3"
 	"os"
 	"path/filepath"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/logan/v3"
+	"github.com/acs-dl/mail-module-svc/internal/config"
+	"github.com/acs-dl/mail-module-svc/internal/data"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"golang.org/x/oauth2/google"
 	admin "google.golang.org/api/admin/directory/v1"

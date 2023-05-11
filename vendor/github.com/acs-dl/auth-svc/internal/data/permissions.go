@@ -3,18 +3,14 @@ package data
 type Permissions interface {
 	New() Permissions
 
-	Upsert(module Permission) error
+	Insert(permission Permission) error
 	Select() ([]ModulePermission, error)
 	Get() (*ModulePermission, error)
-	Delete(permission Permission) error
+	Delete() error
 
-	WithModules() Permissions
+	IncludeModules() Permissions
 
-	FilterByModuleName(name string) Permissions
-	FilterByPermissionId(permissionId int64) Permissions
 	FilterByStatus(status UserStatus) Permissions
-
-	ResetFilters() Permissions
 }
 
 type Permission struct {

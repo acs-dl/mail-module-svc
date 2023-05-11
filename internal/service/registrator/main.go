@@ -2,11 +2,11 @@ package registrator
 
 import (
 	"context"
+	"gitlab.com/distributed_lab/logan/v3"
 	"time"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/logan/v3"
+	"github.com/acs-dl/mail-module-svc/internal/config"
+	"github.com/acs-dl/mail-module-svc/internal/data"
 	"gitlab.com/distributed_lab/running"
 )
 

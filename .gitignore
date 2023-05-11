@@ -4,5 +4,5 @@ config.*.yaml
 docs/node_modules
 docs/web_deploy
 docker-compose.yml
-mail-module
+mail-module-svc
 /public

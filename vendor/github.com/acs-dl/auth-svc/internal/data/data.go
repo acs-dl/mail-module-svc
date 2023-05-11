@@ -1,8 +1,10 @@
 package data
 
 const (
-	ModuleName     = "auth"
-	TokenRegExpStr = `/^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-\+\/=]*)/gm`
+	ModuleName     = "auth-svc"
+	TokenRegExpStr = `^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$`
+	RefreshCookie  = "refresh_token"
+	AccessCookie   = "access_token"
 )
 
 type GenerateTokens struct {

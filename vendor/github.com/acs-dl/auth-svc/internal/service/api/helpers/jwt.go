@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/acs-dl/auth-svc/internal/data"
 	"github.com/golang-jwt/jwt"
-	"gitlab.com/distributed_lab/acs/auth/internal/data"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 

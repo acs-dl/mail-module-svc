@@ -2,14 +2,14 @@ package processor
 
 import (
 	"context"
-
-	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data/manager"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data/postgres"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/googleApi"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/sender"
 	"gitlab.com/distributed_lab/logan/v3"
+
+	"github.com/acs-dl/mail-module-svc/internal/config"
+	"github.com/acs-dl/mail-module-svc/internal/data"
+	"github.com/acs-dl/mail-module-svc/internal/data/manager"
+	"github.com/acs-dl/mail-module-svc/internal/data/postgres"
+	"github.com/acs-dl/mail-module-svc/internal/service/googleApi"
+	"github.com/acs-dl/mail-module-svc/internal/service/sender"
 )
 
 const (

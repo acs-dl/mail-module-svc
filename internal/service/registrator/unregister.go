@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
+	"github.com/acs-dl/mail-module-svc/internal/data"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 

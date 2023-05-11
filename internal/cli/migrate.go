@@ -1,9 +1,9 @@
 package cli
 
 import (
+	"github.com/acs-dl/mail-module-svc/internal/assets"
+	"github.com/acs-dl/mail-module-svc/internal/config"
 	migrate "github.com/rubenv/sql-migrate"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/assets"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 

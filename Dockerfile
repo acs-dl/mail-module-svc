@@ -2,11 +2,11 @@ FROM golang:1.19-alpine as buildbase
 
 RUN apk add git build-base
 
-WORKDIR /go/src/gitlab.com/distributed_lab/acs/mail-module
+WORKDIR /go/src/github.com/acs-dl/mail-module-svc
 COPY vendor .
 COPY . .
 
-RUN GOOS=linux go build  -o /usr/local/bin/mail-module /go/src/gitlab.com/distributed_lab/acs/mail-module
+RUN GOOS=linux go build  -o /usr/local/bin/mail-module /go/src/github.com/acs-dl/mail-module-svc
 
 
 FROM alpine:3.9

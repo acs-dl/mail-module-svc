@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"gitlab.com/distributed_lab/acs/auth/internal/service/api/helpers"
+	"github.com/acs-dl/auth-svc/internal/service/api/helpers"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 )
@@ -15,7 +15,7 @@ func Jwt(secret, module string, permissions ...string) func(http.Handler) http.H
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {
-				log.Println("no auth header provided")
+				log.Println("no auth-svc header provided")
 				ape.RenderErr(w, problems.Unauthorized())
 				return
 			}

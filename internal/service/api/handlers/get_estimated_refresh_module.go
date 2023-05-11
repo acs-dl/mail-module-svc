@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/api/models"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/pqueue"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/worker"
+	"github.com/acs-dl/mail-module-svc/internal/service/api/models"
+	"github.com/acs-dl/mail-module-svc/internal/service/pqueue"
+	"github.com/acs-dl/mail-module-svc/internal/service/worker"
 	"gitlab.com/distributed_lab/ape"
 )
 

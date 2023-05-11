@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"gitlab.com/distributed_lab/acs/mail-module/resources"
+	"github.com/acs-dl/mail-module-svc/resources"
 	"gitlab.com/distributed_lab/ape"
 )
 

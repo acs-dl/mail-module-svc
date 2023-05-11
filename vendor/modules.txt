@@ -13,6 +13,11 @@ github.com/ThreeDotsLabs/watermill/pubsub/sync
 # github.com/ThreeDotsLabs/watermill-amqp/v2 v2.0.7
 ## explicit; go 1.17
 github.com/ThreeDotsLabs/watermill-amqp/v2/pkg/amqp
+# github.com/acs-dl/auth-svc v0.0.0-20230511083241-b6fde9efdf0d
+## explicit; go 1.19
+github.com/acs-dl/auth-svc/internal/data
+github.com/acs-dl/auth-svc/internal/service/api/helpers
+github.com/acs-dl/auth-svc/middlewares
 # github.com/alecthomas/kingpin v2.2.6+incompatible
 ## explicit
 github.com/alecthomas/kingpin
@@ -156,11 +161,6 @@ github.com/spf13/viper
 # github.com/subosito/gotenv v1.2.0
 ## explicit
 github.com/subosito/gotenv
-# gitlab.com/distributed_lab/acs/auth v0.0.0-20230328135644-b4f544227e27
-## explicit; go 1.19
-gitlab.com/distributed_lab/acs/auth/internal/data
-gitlab.com/distributed_lab/acs/auth/internal/service/api/helpers
-gitlab.com/distributed_lab/acs/auth/middlewares
 # gitlab.com/distributed_lab/ape v1.7.1
 ## explicit; go 1.14
 gitlab.com/distributed_lab/ape
@@ -214,8 +214,6 @@ go.opencensus.io/trace
 go.opencensus.io/trace/internal
 go.opencensus.io/trace/propagation
 go.opencensus.io/trace/tracestate
-# golang.org/x/crypto v0.5.0
-## explicit; go 1.17
 # golang.org/x/net v0.5.0
 ## explicit; go 1.17
 golang.org/x/net/context

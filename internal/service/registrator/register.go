@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/resources"
+	"github.com/acs-dl/mail-module-svc/internal/data"
+	"github.com/acs-dl/mail-module-svc/resources"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 

@@ -1,8 +1,8 @@
 package manager
 
 import (
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data/postgres"
+	"github.com/acs-dl/mail-module-svc/internal/data"
+	"github.com/acs-dl/mail-module-svc/internal/data/postgres"
 	"gitlab.com/distributed_lab/kit/pgdb"
 )
 

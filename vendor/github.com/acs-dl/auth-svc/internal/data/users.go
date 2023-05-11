@@ -13,8 +13,8 @@ type Users interface {
 
 	Get() (*User, error)
 
-	FilterByEmail(email string) Users
-	FilterById(id int64) Users
+	FilterByEmails(emails ...string) Users
+	FilterByIds(id ...int64) Users
 }
 
 type User struct {

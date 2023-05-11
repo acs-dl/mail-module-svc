@@ -3,7 +3,7 @@ package helpers
 import (
 	"fmt"
 
-	"gitlab.com/distributed_lab/acs/auth/internal/data"
+	"github.com/acs-dl/auth-svc/internal/data"
 )
 
 func CreatePermissionsString(permissions []data.ModulePermission) (string, error) {

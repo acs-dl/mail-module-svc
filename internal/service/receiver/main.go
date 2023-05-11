@@ -3,17 +3,17 @@ package receiver
 import (
 	"context"
 	"encoding/json"
+	"gitlab.com/distributed_lab/logan/v3"
 	"time"
 
 	"github.com/ThreeDotsLabs/watermill-amqp/v2/pkg/amqp"
 	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/acs-dl/mail-module-svc/internal/config"
+	"github.com/acs-dl/mail-module-svc/internal/data"
+	"github.com/acs-dl/mail-module-svc/internal/data/postgres"
+	"github.com/acs-dl/mail-module-svc/internal/service/processor"
+	"github.com/acs-dl/mail-module-svc/internal/service/worker"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/config"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/data/postgres"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/processor"
-	"gitlab.com/distributed_lab/acs/mail-module/internal/service/worker"
-	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/distributed_lab/running"
 )
