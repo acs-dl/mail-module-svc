@@ -1,0 +1,18 @@
+type: object
+required:
+  - action
+  - email
+  - user_id
+properties:
+  action:
+    type: string
+    description: action that must be handled in module, must be "verify_user"
+    example: "add_user"
+  email:
+    type: string
+    description: user email to verify with
+    example: "user@domain.com"
+  user_id:
+    type: string
+    description: user's id from identity
+    example: "123"

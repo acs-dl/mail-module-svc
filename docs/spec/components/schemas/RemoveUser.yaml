@@ -1,0 +1,14 @@
+type: object
+description: action to remove user from domain in mail
+required:
+  - action
+  - email
+properties:
+  action:
+    type: string
+    description: action that must be handled in module, must be "remove_user"
+    example: "remove_user"
+  email:
+    type: string
+    description: user email to remove domain
+    example: "user@domain.com"
