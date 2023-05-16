@@ -1,0 +1,35 @@
+allOf:
+  - $ref: "#/components/schemas/UserPermissionKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - module_id
+          - link
+          - path
+          - username
+        properties:
+          username:
+            type: string
+            description: email from domain
+            example: "...@domain.com"
+          module_id:
+            type: string
+            description: user id from module
+            example: "8421495"
+          user_id:
+            type: integer
+            format: int64
+            description: user id from identity
+            example: 666
+          link:
+            type: string
+            description: domain name
+            example: "@domain.com"
+          path:
+            type: string
+            description: domain name
+            example: "@domain.com"

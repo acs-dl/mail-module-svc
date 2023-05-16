@@ -1,0 +1,20 @@
+allOf:
+  - $ref: "#/components/schemas/UserKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - email
+          - name
+        properties:
+          email:
+            type: string
+            description: email from domain mail
+            example: "...@domain.com"
+          name:
+            type: string
+            description: name from domain account
+            example: "Maksym Hrynenko"

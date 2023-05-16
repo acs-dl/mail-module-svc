@@ -1,0 +1,12 @@
+type: object
+required:
+  - action
+properties:
+  action:
+    type: string
+    description: action that must be handled in module, must be "delete_user"
+    example: "delete_user"
+  email:
+    type: string
+    description: user email to delete from domains
+    example: "user@domain.com"

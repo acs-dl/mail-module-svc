@@ -1,0 +1,18 @@
+allOf:
+  - $ref: "#/components/schemas/InputsKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - email
+          - link
+        properties:
+          email:
+            type: string
+            description: email from dl domain
+          link:
+            type: string
+            description: link for which would be given access
