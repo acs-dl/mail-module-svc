@@ -2,6 +2,7 @@ package processor
 
 import (
 	"context"
+
 	"gitlab.com/distributed_lab/logan/v3"
 
 	"github.com/acs-dl/mail-module-svc/internal/config"
@@ -30,22 +31,24 @@ type Processor interface {
 }
 
 type processor struct {
-	log          *logan.Entry
-	googleClient googleApi.GoogleClient
-	permissionsQ data.Permissions
-	usersQ       data.Users
-	managerQ     *manager.Manager
-	sender       *sender.Sender
+	log             *logan.Entry
+	googleClient    googleApi.GoogleClient
+	permissionsQ    data.Permissions
+	usersQ          data.Users
+	managerQ        *manager.Manager
+	sender          *sender.Sender
+	unverifiedTopic string
 }
 
 func NewProcessorAsInterface(cfg config.Config, ctx context.Context) interface{} {
 	return interface{}(&processor{
-		log:          cfg.Log().WithField("service", ServiceName),
-		googleClient: googleApi.GoogleClientInstance(ctx),
-		permissionsQ: postgres.NewPermissionsQ(cfg.DB()),
-		usersQ:       postgres.NewUsersQ(cfg.DB()),
-		managerQ:     manager.NewManager(cfg.DB()),
-		sender:       sender.SenderInstance(ctx),
+		log:             cfg.Log().WithField("service", ServiceName),
+		googleClient:    googleApi.GoogleClientInstance(ctx),
+		permissionsQ:    postgres.NewPermissionsQ(cfg.DB()),
+		usersQ:          postgres.NewUsersQ(cfg.DB()),
+		managerQ:        manager.NewManager(cfg.DB()),
+		sender:          sender.SenderInstance(ctx),
+		unverifiedTopic: cfg.Amqp().Unverified,
 	})
 }
 
