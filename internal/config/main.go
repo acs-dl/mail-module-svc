@@ -20,6 +20,7 @@ type Config interface {
 	Runners() *RunnersCfg
 	RateLimit() *RateLimitCfg
 	Registrator() RegistratorConfig
+	Mail() *MailCfg
 }
 
 type config struct {
@@ -37,6 +38,7 @@ type config struct {
 	jwtCfg      comfig.Once
 	rateLimit   comfig.Once
 	runners     comfig.Once
+	mail        comfig.Once
 }
 
 func New(getter kv.Getter) Config {
