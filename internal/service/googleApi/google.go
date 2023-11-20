@@ -2,9 +2,10 @@ package googleApi
 
 import (
 	"context"
-	"gitlab.com/distributed_lab/logan/v3"
 	"os"
 	"path/filepath"
+
+	"gitlab.com/distributed_lab/logan/v3"
 
 	"github.com/acs-dl/mail-module-svc/internal/config"
 	"github.com/acs-dl/mail-module-svc/internal/data"
@@ -51,7 +52,7 @@ func NewGoogleAsInterface(cfg config.Config, ctx context.Context) interface{} {
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
-	myConfig.Subject = "mykhailo.velykodnyi@centrilisedgym.online"
+	myConfig.Subject = cfg.Mail().Subject
 
 	// Use the client to authenticate API requests
 	client := myConfig.Client(ctx)

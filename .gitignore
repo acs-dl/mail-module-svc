@@ -6,3 +6,4 @@ docs/web_deploy
 docker-compose.yml
 mail-module-svc
 /public
+credentials.json

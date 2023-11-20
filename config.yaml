@@ -38,6 +38,10 @@ registrator:
   prefix: ""
   is_module: true
 
+# subject is the optional user to impersonate
+mail:
+  subject: maksym@acsgang.online
+
 cop:
   disabled: true
   endpoint: "http://..."
