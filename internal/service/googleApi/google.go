@@ -3,7 +3,6 @@ package googleApi
 import (
 	"context"
 	"os"
-	"path/filepath"
 
 	"gitlab.com/distributed_lab/logan/v3"
 
@@ -32,23 +31,15 @@ type googleApi struct {
 func NewGoogleAsInterface(cfg config.Config, ctx context.Context) interface{} {
 	log := cfg.Log()
 
-	currentDir, err := os.Getwd()
-	if err != nil {
-		log.WithError(err).Errorf("failed to get current directory path")
-		panic(errors.Wrap(err, "failed to get current directory path"))
-	}
-
-	credFile := filepath.Join(currentDir, "credentials.json")
-
-	privateCredBytes, err := os.ReadFile(credFile)
-	if err != nil {
-		log.WithError(err).Errorf("unable to read client secret file")
-		panic(errors.Wrap(err, "unable to read client secret file"))
+	credentials := os.Getenv("SERVICE_ACCOUNT_CREDENTIALS")
+	if credentials == "" {
+		log.Errorf("failed to get service account credentials")
+		panic(errors.New("failed to get service account credentials"))
 	}
 
 	scopes := []string{admin.AdminDirectoryUserScope}
 
-	myConfig, err := google.JWTConfigFromJSON(privateCredBytes, scopes...)
+	myConfig, err := google.JWTConfigFromJSON([]byte(credentials), scopes...)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
