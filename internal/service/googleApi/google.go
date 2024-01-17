@@ -42,8 +42,8 @@ func NewGoogleAsInterface(cfg config.Config, ctx context.Context) interface{} {
 	myConfig, err := google.JWTConfigFromJSON([]byte(credentials), scopes...)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
+		panic(errors.New(fmt.Sprintf("Unable to parse client secret file to config: %v", err)))
 	}
-	myConfig.Subject = cfg.Mail().Subject
 
 	// Use the client to authenticate API requests
 	client := myConfig.Client(ctx)
@@ -51,6 +51,7 @@ func NewGoogleAsInterface(cfg config.Config, ctx context.Context) interface{} {
 	service, err := admin.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Failed to create service: %v", err)
+		panic(errors.New(fmt.Sprintf("Failed to create service: %v", err)))
 	}
 
 	return interface{}(&googleApi{
